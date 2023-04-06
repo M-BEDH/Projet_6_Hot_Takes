@@ -34,4 +34,3 @@ app.use('/api/auth', userRoutes);
 
 module.exports = app;
 
-//as been blocked by CORS policy: Method PUT is not allowed by Access-Control-Allow-Methods in preflight response
