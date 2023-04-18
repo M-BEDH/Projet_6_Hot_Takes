@@ -8,8 +8,8 @@ module.exports = (req, res, next) => {
        req.auth = {
            userId
        };
-     
-	next();
+     //  console.log('token :' + token)
+     next();
    } catch(error) {
        res.status(401).json({ error });
    }
