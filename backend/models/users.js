@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require ('mongoose-unique-validator');
 
-//créer un shéma de donées
+//création d'un shéma de données utilisateur
 const userSchema = mongoose.Schema({
     email: { type: String, required: true, unique: true},
     password: { type: String, required: true}

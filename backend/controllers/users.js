@@ -3,7 +3,10 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/users');
 
+// creation compte
 exports.signup = (req, res, next) => {
+    
+    //avec hachage du mot de passe
 bcrypt.hash(req.body.password, 10)
 .then(hash =>  { 
     const user = new User({
@@ -17,6 +20,8 @@ bcrypt.hash(req.body.password, 10)
 .catch(error => res.status(500).json({error}));
 };
 
+
+//s'identifier si compte dejà crée
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
     .then(user => {
@@ -29,6 +34,7 @@ exports.login = (req, res, next) => {
                 return res.status(401).json({ message: 'Paire login/mot de passe incorrecte' });
             }
             res.status(200).json({
+                //Creation automatique d'un token unique valide 24h
                 userId: user._id,
                 token: /*'TOKEN' */ jwt.sign(
                     { userId: user._id,},

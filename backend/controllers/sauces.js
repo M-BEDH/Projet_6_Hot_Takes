@@ -56,6 +56,7 @@ exports.likeSauce =  (req, res, next) => {
     //récupération en base de données de la sauce créée
     Sauce.findOne({_id: req.params.id})
     .then((sauce) => {
+        // si like
         if (like === 1) {
             Sauce.updateOne({ _id: req.params.id}, {
                 $push:{
@@ -69,6 +70,7 @@ exports.likeSauce =  (req, res, next) => {
             .catch(error => { res.status(500).json({ error }) })
         }
         else {
+            //si dislike
             if(like === -1){
                 Sauce.updateOne({ _id: req.params.id}, {
                     $push:{
@@ -112,9 +114,6 @@ exports.likeSauce =  (req, res, next) => {
             })
             .catch(error => res.status(401).json({ error }));
         };
-        
-        
-        
         
         // Suppression de la sauce
         exports.deleteSauce = (req, res, next) => {
