@@ -28,7 +28,7 @@ exports.modifySauce =  (req, res, next) => {
     } : { ...req.body };
     
     //suppression de l'userId venant de la requête
-     delete objectSauce._userId;
+    delete objectSauce._userId;
     
     //récupération en base de données de la sauce créée
     Sauce.findOne({_id: req.params.id})
