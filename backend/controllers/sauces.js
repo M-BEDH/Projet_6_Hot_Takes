@@ -47,17 +47,13 @@ exports.modifySauce =  (req, res, _next) => {
 
 // fonction likes dislikes 
 exports.likeSauce =  (req, res, _next) => {
-    
     let like = req.body.like
     let userId = req.body.userId
-    
-    console.log("valeur reçu pour like = "+like)
-    console.log("valeur reçu pour userId = "+userId)
     
     //récupération en base de données de la sauce créée
     Sauce.findOne({_id: req.params.id})
     .then((sauce) => {
-        // si like
+        // si like vérifier si user a déjà voter
         if ((like === 1) && !(sauce.usersLiked.find(user => user === userId)) && !(sauce.usersDisliked.find(user => user === userId))) {
             Sauce.updateOne({ _id: req.params.id}, {
                 $push:{
@@ -69,9 +65,9 @@ exports.likeSauce =  (req, res, _next) => {
             })
             .then(() => { res.status(201).json({ message: "like" }) })
             .catch(error => { res.status(500).json({ error }) })
-        }
-        else {
-            //si dislike
+
+        } else {
+            //si dislike  vérifier si user a déjà voter
             if(like === -1 && !(sauce.usersLiked.find(user => user === userId)) && !(sauce.usersDisliked.find(user => user === userId))){
                 Sauce.updateOne({ _id: req.params.id}, {
                     $push:{
@@ -84,7 +80,7 @@ exports.likeSauce =  (req, res, _next) => {
                 .then(() => { res.status(201).json({ message: "dislike" }) })
                 .catch(error => { res.status(500).json({ error }) })
             }
-            // cas like=0 => annulation vote
+            // cas like=0 => annulation vote -- vérifier si like ou dislike puis enlever le vote
             else {
                 if(like === 0) {
                     Sauce.findOne({_id: req.params.id})
@@ -100,8 +96,8 @@ exports.likeSauce =  (req, res, _next) => {
                             })
                             .then(() => { res.status(201).json({ message: "annulation du vote like" }) })
                             .catch(error => { res.status(500).json({ error }) })
-                        }
-                        else {
+
+                        } else {
                             if (sauce.usersDisliked.find(user => user === userId)) {
                                 Sauce.updateOne({ _id: req.params.id}, {
                                     $pull:{
@@ -110,22 +106,20 @@ exports.likeSauce =  (req, res, _next) => {
                                     $inc: {
                                         dislikes: -1
                                     }})
+                                    
                                     .then(() => { res.status(201).json({ message: "annulation du vote dislike" }) })
                                     .catch(error => { res.status(500).json({ error }) })
-                                }
-                                else {res.status(201).json({ message: "valeurs incompatibles" })}
+
+                                } else {res.status(201).json({ message: "valeurs incompatibles" })}
                             };
                             });
-                        }
-                    else {res.status(201).json({ message: "valeurs incompatibles" })}
-                    }
-                    };
-                  
+
+                        } else {res.status(201).json({ message: "valeurs incompatibles" }) }
+                    }};
                 })
-                .catch(error => res.status(401).json({ error }));
+                .catch(error => res.status(401).json({ error }) );
             };
             
-            // ********************************************************************************************************************************************************
             
             // Suppression de la sauce
             exports.deleteSauce = (req, res, _next) => {
@@ -140,8 +134,7 @@ exports.likeSauce =  (req, res, _next) => {
                             .then(() => { res.status(200).json({message: 'Sauce supprimée !'})})
                             .catch(error => res.status(401).json({ error }));
                         });
-                    }
-                })
+                    }} )
                 .catch( error => {
                     res.status(500).json({ error });
                 });
