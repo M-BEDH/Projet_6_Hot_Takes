@@ -1,17 +1,17 @@
-//import packages
+//import dépendances
 const express = require('express');
 const mongoose = require('mongoose');
 
-//Prévention des attaques par injections - sécurité 
+//Prévention  - sécurité 
 const mongoSanitize = require('express-mongo-sanitize')
-
-//const helmet = require('helmet')
+const helmet = require('helmet')
 
 //limiter les demandes répétées à API 
 const  rateLimit = require ('express-rate-limit')
 const limiteur = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limitez chaque IP à 100 demandes par `fenêtre` ( ici, par 15 minutes )
+  windowMs: 30 * 60 * 1000, // 30 minutes
+  max: 100, // Limitez chaque IP à 100 demandes par `fenêtre` ( ici, par 30 minutes )
+  message: "Trop de requêtes",
   standardHeaders: true, // Informations sur la limite de taux de retour dans les en-têtes `RateLimit- *`
   legacyHeaders: false, // Désactiver les en-têtes `X-RateLimit- *`
 });
@@ -28,11 +28,11 @@ mongoose.connect('mongodb+srv://PremierUtilisateur:lm57u6kdOaNznVjA@cluster0.cjx
   .catch(() => console.log('Connexion à MongoDB échouée !'));
   
   
-  //création et configuration app express 
+  //configuration express 
   const app = express();
   app.use(express.json());
   app.use(mongoSanitize());
-  //app.use(helmet.xssFilter());
+  app.use(helmet.xssFilter());
   app.use(limiteur);
   
   
